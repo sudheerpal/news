@@ -1,24 +1,54 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Typography from "@material-ui/core/Typography";
+import Container from "@material-ui/core/Container";
+import NewsListing from "./components/newsListing";
+import NewsDetail from "./components/newsDetailPage";
 
 function App() {
+  const [data, setData] = useState([]);
+  const [detailObj, setDetailObj] = useState({});
+  const [dataLoaded, setDataLoaded] = useState(false);
+
+  useEffect(() => {
+    fetchData();
+    return () => {
+      setData([]);
+      setDetailObj({});
+    };
+  }, []);
+
+  const fetchData = async () => {
+    let res = await fetch(
+      `http://newsapi.org/v2/top-headlines?country=gb&apiKey=fea8ac48760a48528a6e80c45f224631`
+    );
+    let resJson = await res.json();
+    console.log("resJson", resJson);
+    if (resJson.status === "ok") {
+      setData(resJson.articles);
+      setDataLoaded(true);
+    }
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <>
+        <CssBaseline />
+        <Container maxWidth="md">
+          {!dataLoaded && <p>{`Loading...`}</p>}
+
+          {dataLoaded && Object.keys(detailObj).length === 0 && (
+            <NewsListing
+              dataItems={data}
+              clickForDetail={(data) => setDetailObj(data)}
+            />
+          )}
+
+          {Object.keys(detailObj).length !== 0 && (
+            <NewsDetail item={detailObj} back={() => setDetailObj({})} />
+          )}
+        </Container>
+      </>
     </div>
   );
 }
