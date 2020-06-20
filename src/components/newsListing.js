@@ -18,14 +18,6 @@ const DateAuthor = styled.div`
   width: 100%;
 `;
 
-const UploadRow = styled.div`
-  margin: 0.25em 0.25em;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  height: 4em;
-`;
-
 const NewsListing = ({ dataItems, clickForDetail }) => {
   const clickHandler = (item) => {
     clickForDetail(item);

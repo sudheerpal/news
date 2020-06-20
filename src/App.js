@@ -7,6 +7,7 @@ import NewsDetail from "./components/newsDetailPage";
 
 function App() {
   const [data, setData] = useState([]);
+  const [nextPage, setNextPage] = useState(1);
   const [detailObj, setDetailObj] = useState({});
   const [dataLoaded, setDataLoaded] = useState(false);
 
@@ -19,12 +20,18 @@ function App() {
   }, []);
 
   const fetchData = async () => {
-    let res = await fetch(
-      `http://newsapi.org/v2/top-headlines?country=gb&apiKey=fea8ac48760a48528a6e80c45f224631`
-    );
+    let url = `http://newsapi.org/v2/top-headlines?country=gb&apiKey=fea8ac48760a48528a6e80c45f224631`;
+    if (nextPage) {
+      url = `http://newsapi.org/v2/top-headlines?country=gb&apiKey=fea8ac48760a48528a6e80c45f224631&page=${nextPage}`;
+    }
+    let res = await fetch(url);
+
     let resJson = await res.json();
     console.log("resJson", resJson);
     if (resJson.status === "ok") {
+      if (resJson.nextPage) {
+        setNextPage(resJson.nextPage);
+      }
       setData(resJson.articles);
       setDataLoaded(true);
     }
@@ -42,6 +49,12 @@ function App() {
               dataItems={data}
               clickForDetail={(data) => setDetailObj(data)}
             />
+          )}
+
+          {data.length > 0 && nextPage && Object.keys(detailObj).length === 0 && (
+            <p onClick={() => fetchData()} style={{ textAlign: "center" }}>
+              load more...
+            </p>
           )}
 
           {Object.keys(detailObj).length !== 0 && (
