@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 import NewsListing from "./components/newsListing";
 import NewsDetail from "./components/newsDetailPage";
 
 function App() {
   const [data, setData] = useState([]);
-  const [nextPage, setNextPage] = useState(1);
+  const [nextPage, setNextPage] = useState(null);
   const [detailObj, setDetailObj] = useState({});
   const [dataLoaded, setDataLoaded] = useState(false);
 
@@ -29,10 +28,8 @@ function App() {
     let resJson = await res.json();
     console.log("resJson", resJson);
     if (resJson.status === "ok") {
-      if (resJson.nextPage) {
-        setNextPage(resJson.nextPage);
-      }
-      setData(resJson.articles);
+      resJson.nextPage ? setNextPage(resJson.nextPage) : setNextPage(null);
+      setData(data.concat(resJson.articles));
       setDataLoaded(true);
     }
   };
