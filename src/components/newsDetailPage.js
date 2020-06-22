@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Icon, IconButton } from "@material-ui/core";
 import styled from "styled-components";
 import moment from "moment";
@@ -19,7 +19,10 @@ const DateAuthor = styled.div`
   width: 100%;
 `;
 
-const NewsDetail = ({ item, back }) => {
+const NewsDetail = ({ item, back, emptySearchResults }) => {
+  useEffect(() => {
+    emptySearchResults();
+  }, []);
   return (
     <>
       <IconButton
